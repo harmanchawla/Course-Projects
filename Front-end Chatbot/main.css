@@ -1,0 +1,74 @@
+body {
+  background: #FFFFFF;
+}
+
+.closeTag {
+  position: absolute;
+  right: 32px;
+  top: 32px;
+  width: 32px;
+  height: 32px;
+  opacity: 0.3;
+}
+
+.closeTag:hover {
+  opacity: 1;
+}
+.closeTag:before, .close:after {
+  position: absolute;
+  left: 15px;
+  content: ' ';
+  height: 33px;
+  width: 2px;
+  background-color: #FFFFFF;
+}
+.closeTag:before {
+  transform: rotate(45deg);
+}
+.closeTag:after {
+  transform: rotate(-45deg);
+}
+
+.moveIcons {
+  right: -400px;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  right: -400px;
+  width: 400px;
+  min-width: 300px;
+  height: 100%;
+  transition: .3s;
+  background: #FFFFFF;
+  box-shadow: 4px 4px 4px 4px rgba(0, 0, 0, 0.2), 10px 10px 10px 10px rgba(0, 0, 0, 0.1);
+  z-index: 20;
+}
+
+.active {
+  right: 0;
+}
+
+.sidebarButton {
+  position: absolute;
+  top: 0;
+  left: -50px;
+  width: 50px;
+  height: 50px;
+  box-sizing: border-box;
+  cursor: pointer;
+  background: #DF3DA2;
+  border: none;
+  outline: none;
+}
+
+.sidebarButton span.close {
+  display: block;
+  width: 35px;
+  height: 3px;
+  background: #262626;
+  position: absolute;
+  top: 24px;
+  transition: .3s;
+}

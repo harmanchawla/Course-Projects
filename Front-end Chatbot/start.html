@@ -1,0 +1,49 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title> Chatbot Demo </title>
+<link rel="stylesheet" href="style.css">
+<script src="main.js"></script>
+</head>
+
+<body>
+
+<div onload="isOnline()">
+	<div id="chat-images">
+	  	<a href="#" class="float spawn notification" id="menu-share" onclick="isOnline()">
+			<i class="my-float">
+				<span> <img src="assets/images/botchat.png" class="reshape"/> </span>
+				<span class="bagde" id="message-count"> 0 </span>
+			</i>
+		</a>
+		<ul>
+			<li style="padding-bottom: 5px; padding-left: 10px">
+				<a class="notification" onclick="hideButtons()">
+					<span> <img class="my-float reshape" src="assets/images/bot-avatar.png" /> </span>
+					<span class="badge"> 0 </span>
+				</a>
+			</li>
+			<li style="padding-left: 15px; padding-bottom: 8px">
+				<a class="notification">
+					<span>	<img class="my-float reshape" src="assets/images/person-avatar.png" /> </span>
+					<span class="badge"> 0 </span>
+				</a>
+			</li>
+		</ul>
+
+		<div class="label-container">
+			<div class="label-text">
+				Ask a Librarian
+			</div>
+		</div>
+	</div>
+</div>
+
+<div id="chat-window">
+	<iframe src="dreamweaver/index.html"> </iframe>
+	<p> This works! </p>
+</div>
+</body>
+</html>

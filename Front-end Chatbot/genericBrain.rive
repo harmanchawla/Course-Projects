@@ -1,0 +1,51 @@
+! version = 2.0
+
++ *
+- This would require some expertise. <a href="https://libraryh3lp.com/chat/askbobst@chat.libraryh3lp.com?skin=23106&popout=1&sounds=1" target="_blank">Click here</a> to interact with the librarian.
+
++ (hi|hey|hello)[*]
+- Hi there!
+- Hey!
+
++ my name is *
+- <set name=<formal>>Nice to meet you, <get name>!
+
++ are you human
+- Having taken the Turing Test yet.
+- Waiting on my Turing Test results.
+
++  what are you
+- I am a bot. I will attempt to navigate you in the right direction.
+
++ hola
+- Hola amigo! Unfortunately, that's all the Spanish I know.
+
++ how are you
+- I'm fine, thanks for asking!{weight=10}
+
++ thanks
+- No Problem.
+
++ bye
+- Bye
+
++ [*] (find books|search books|lookup books|books lookup|course reserves|reserve books) [*]
+- Try the search bar here to lookup: <a href="https://library.nyu.edu/" target="_blank">link</a>.
++ [*] (digital library|digital|eshelf|e shelf) [*]
+- This might help you: <a href="https://eshelf.library.nyu.edu/users/account/show" target="_blank">link</a>.
++ [*] (trial journals|databases|journals|publications|journal) [*]
+- This might help you: <a href="https://guides.nyu.edu/az.php?t=27934" target="_blank">link</a>.
++ [*] (articles|recent articles|article) [*]
+- This might help you: <a href="https://guides.nyu.edu/arch" target="_blank">link</a>.
++ [*] (staff|library people|reach out|people)[*]
+- This might help you: <a href="https://library.nyu.edu/people" target="_blank">link</a>.
++ [*] (student login|login) [*]
+- This might help you: <a href="https://login.library.nyu.edu/" target="_blank">link</a>.
++ [*] (research guides|guides) [*]
+- This might help you: <a href="https://guides.nyu.edu/?b=s" target="_blank">link</a>.
++ [*] data services [*]
+- This might help you: <a href="https://library.nyu.edu/departments/data-services/" target="_blank">link</a>.
++ [*] (news|events|update|updates|event|workshops|workshop) [*]
+- This might help you: <a href="http://nyu.libcal.com/calendar/" target="_blank">link</a>.
++ [*] (inter library loan|loan books|different library|ill|interlibrary loan) [*]
+- This might help you: <a href="http://ill.library.nyu.edu/illiad/illiad.dll" target="_blank">link</a>.

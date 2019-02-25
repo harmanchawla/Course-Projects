@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title> Chatbot: Bern Dibner Library</title>
+	<link href="style.css" rel="stylesheet" type="text/css">
+</head>
+
+<body>
+	<div class="container">
+		<div name="application-area">
+			<!-- Top bar beginning-->
+	  		<div name="top-bar" class="top-bar">
+	  			<span> <p class="heading"> Chat Online </p> </span>
+	  		</div>
+			<!-- Top bar ends -->
+
+			<!-- First message beginning -->
+			<div id="message-area" style="overflow-y: scroll;">
+				<img src="hello.gif" style=" position: relative; width: 50%; margin-left: 5%; padding-top: 60px; max-width: 50%;"/>
+				<div class="message-container">
+					<img src="bot-avatar.png" style="width: 100%" /> <br />
+					<p class="chat-response-block" id="bot-response"> Hello! I am new around here, but I'll try to help you to the best of my abilities. <br>
+					<span class="time-left" id="time1"> </span>
+					</p>
+				</div>
+			</div>
+			<!-- First message ends -->
+
+			<!-- Input and response display -->
+			<div class="conversation">
+        <div id="botreply"> </div>
+        <div id="userinput"> </div>
+          <p style="color: white;"> Set value to not NULL <p> </div>
+      <div id="edge"></div>
+
+
+			<!-- Sample rendered response looks like this:
+			<div class="message-container">
+				<img src="person-avatar.png" alt="Person-Avatar" style="width: 100%" class="right" />
+				<p class="chat-input-block" id="user-response"> Reserving a room <br />
+						<span class="time-right" id="time2"> 10:31 PM</span>
+				</p>
+			</div>	-->
+
+			<!-- Input and response display ends -->
+
+			<!-- User input form beginning -->
+			<div>
+					<form class="user-input" id="user-input" method="get" action="submit">
+						<input name="textfield" type="text" class="message" placeholder="Type your message here..." id="input" value="hello" />
+						<button class="send" id="sendButton" name="inputTextField"> <span> Send </span> </button>
+					</form>
+			</div>
+
+			<!-- User input form ends -->
+
+		</div>
+	</div>
+
+	<?php
+		$txt = "queries.txt";
+		$fh = fopen($txt, 'w+');
+			if (isset($_POST['field1']) && isset($_POST['field2'])) {
+   			$txt=$_POST['inputTextField'];
+   			file_put_contents('data.txt',$txt."\n",FILE_APPEND); // log to data.txt
+	   		exit();
+	 		}
+    	fwrite($fh,$txt); // Write information to the file
+    	fclose($fh); // Close the file
+  ?>
+	<script src="rivescript.js"> </script>
+	<script src="script.js"> </script>
+</body>
+</html>

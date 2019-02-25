@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title> Libro </title>
+    <link rel="stylesheet" href="main.css" />
+    <link rel="stylesheet" href="bot.css" />
+    <link rel="stylesheet" href="icon.css" />
+    <link rel="stylesheet" href="toggleSwitch.css" />
+    <script src="https://code.jquery.com/jquery-3.3.1.js"> </script>
+    <script src='https://code.responsivevoice.org/responsivevoice.js'> </script>
+    <script type="text/javascript">
+      $(document).ready(function() {
+        $('.chatStart').click(function() {
+          $('.sidebar').toggleClass('active');
+          $('.closeButton').show();
+          responsiveVoice.speak("Hello! I am new around here, but I'll try to help you to the best of my abilities.", 'UK English Female');
+
+        });
+      });
+    </script>
+    <script type="text/javascript" src="iconDriver.js"></script>
+  </head>
+
+  <body>
+    <div class="sidebar" style="overflow: scroll;">
+      <div class="container">
+        <div class="switch-span">
+          <label class="switch">
+            <input type="checkbox" class="switchicon" id="voiceSwitch" checked>
+            <span class="slider round">
+          </label>
+            <img class="closeIcon" src="close.png" width="20px" height="20px" />
+        </div>
+
+
+    		<div name="application-area">
+    			<!-- Top bar beginning-->
+    	  		<div name="top-bar" class="top-bar">
+               <span> <p class="heading"> Chat Online </p> </span>
+              <!-- <span class="closeIcon"> <a href="#" class="closeTag"> </span> -->
+    	  		</div>
+    			<!-- Top bar ends -->
+
+    			<!-- First message beginning -->
+    			<div id="message-area" style="overflow-y: scroll;">
+    				<img src="hello.gif" style=" position: relative; width: 50%; margin-left: 5%; padding-top: 60px; max-width: 50%;"/>
+    				<div class="message-container">
+    					<img src="bot-avatar.png" style="width: 100%" /> <br />
+    					<p class="chat-response-block" id="bot-response"> Hello! I am new around here, but I'll try to help you to the best of my abilities.  <br /> <br /> If you don't want the vocal feedback, click the button on the top-right corner. <br />
+    					<span class="time-left" id="time1"> </span>
+    					</p>
+    				</div>
+    			</div>
+    			<!-- First message ends -->
+
+    			<!-- Input and response display -->
+    			<div class="conversation">
+            <div id="botreply"> </div>
+            <div id="userinput"> </div>
+              <p style="color: white; min-height: 80px;"> Set value to not NULL <p> </div>
+          <div id="edge"></div>
+
+    			<!-- Sample rendered response looks like this:
+    			<div class="message-container">
+    				<img src="person-avatar.png" alt="Person-Avatar" style="width: 100%" class="right" />
+    				<p class="chat-input-block" id="user-response"> Reserving a room <br />
+    						<span class="time-right" id="time2"> 10:31 PM</span>
+    				</p>
+    			</div>	-->
+
+    			<!-- Input and response display ends -->
+
+    			<!-- User input form beginning -->
+    			<div>
+    					<form class="user-input" id="user-input">
+    						<input name="textfield" type="text" class="message" placeholder="Type your message here..." id="user-text-input" value="" required/>
+    						<button class="send"> <span> Send </span> </button>
+    					</form>
+    			</div>
+    			<!-- User input form ends -->
+
+    		</div>
+    	</div>
+      </div>
+
+      <div class="iconSet">
+      	<div id="chat-images">
+      	  	<a href="#" class="float spawn notification chatStart" id="menu-share">
+      			<i class="my-float">
+      				<span> <img src="botchat.png" class="reshape"/> </span>
+      				<span class="bagde" id="message-count"> 0 </span>
+      			</i>
+      		</a>
+      		<ul>
+      			<li style="padding-bottom: 5px; padding-left: 10px">
+      				<a class="notification">
+      					<span> <img class="my-float reshape chatStart" src="bot-avatar.png" /> </span>
+      					<span class="badge"> 0 </span>
+      				</a>
+      			</li>
+      			<li style="padding-left: 15px; padding-bottom: 8px">
+      				<a href="https://libraryh3lp.com/chat/askbobst@chat.libraryh3lp.com?skin=23106&popout=1&sounds=1" class="notification" target="_blank">
+      					<span>	<img class="my-float reshape" src="person-avatar.png" /> </span>
+      					<span class="badge"> 0 </span>
+      				</a>
+      			</li>
+      		</ul>
+
+      		<div class="label-container">
+      			<div class="label-text">
+      				Ask a Librarian
+      			</div>
+      		</div>
+      	</div>
+      </div>
+
+      <button type="button" class="sidebarButton">
+        <span class="close"> </span>
+      </button>
+
+      <script type="text/javascript" src="rivescript.js"> </script>
+    	<script type="text/javascript" src="script.js"> </script>
+  </body>
+</html>
