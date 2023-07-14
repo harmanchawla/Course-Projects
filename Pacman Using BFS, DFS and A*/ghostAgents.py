@@ -25,10 +25,11 @@ class GhostAgent( Agent ):
 
     def getAction( self, state ):
         dist = self.getDistribution(state)
-        if len(dist) == 0:
-            return Directions.STOP
-        else:
-            return util.chooseFromDistribution( dist )
+        return (
+            Directions.STOP
+            if len(dist) == 0
+            else util.chooseFromDistribution(dist)
+        )
 
     def getDistribution(self, state):
         "Returns a Counter encoding a distribution over actions from the provided state."
@@ -56,9 +57,7 @@ class DirectionalGhost( GhostAgent ):
         pos = state.getGhostPosition( self.index )
         isScared = ghostState.scaredTimer > 0
 
-        speed = 1
-        if isScared: speed = 0.5
-
+        speed = 0.5 if isScared else 1
         actionVectors = [Actions.directionToVector( a, speed ) for a in legalActions]
         newPositions = [( pos[0]+a[0], pos[1]+a[1] ) for a in actionVectors]
         pacmanPosition = state.getPacmanPosition()

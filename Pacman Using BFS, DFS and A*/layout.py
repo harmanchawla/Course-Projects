@@ -79,7 +79,7 @@ class Layout:
 
     def getFurthestCorner(self, pacPos):
         poses = [(1,1), (1, self.height - 2), (self.width - 2, 1), (self.width - 2, self.height - 2)]
-        dist, pos = max([(manhattanDistance(p, pacPos), p) for p in poses])
+        dist, pos = max((manhattanDistance(p, pacPos), p) for p in poses)
         return pos
 
     def isVisibleFrom(self, ghostPos, pacPos, pacDirection):
@@ -130,12 +130,13 @@ class Layout:
             self.numGhosts += 1
 def getLayout(name, back = 2):
     if name.endswith('.lay'):
-        layout = tryToLoad('layouts/' + name)
-        if layout == None: layout = tryToLoad(name)
+        layout = tryToLoad(f'layouts/{name}')
+        if layout is None: layout = tryToLoad(name)
     else:
-        layout = tryToLoad('layouts/' + name + '.lay')
-        if layout == None: layout = tryToLoad(name + '.lay')
-    if layout == None and back >= 0:
+        layout = tryToLoad(f'layouts/{name}.lay')
+        if layout is None:
+            layout = tryToLoad(f'{name}.lay')
+    if layout is None and back >= 0:
         curdir = os.path.abspath('.')
         os.chdir('..')
         layout = getLayout(name, back -1)

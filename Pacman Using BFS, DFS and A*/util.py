@@ -314,10 +314,7 @@ class Counter(dict):
         """
         addend = Counter()
         for key in self:
-            if key in y:
-                addend[key] = self[key] + y[key]
-            else:
-                addend[key] = self[key]
+            addend[key] = self[key] + y[key] if key in y else self[key]
         for key in y:
             if key in self:
                 continue
@@ -340,10 +337,7 @@ class Counter(dict):
         """
         addend = Counter()
         for key in self:
-            if key in y:
-                addend[key] = self[key] - y[key]
-            else:
-                addend[key] = self[key]
+            addend[key] = self[key] - y[key] if key in y else self[key]
         for key in y:
             if key in self:
                 continue
@@ -374,13 +368,12 @@ def normalize(vectorOrCounter):
     else:
         vector = vectorOrCounter
         s = float(sum(vector))
-        if s == 0: return vector
-        return [el / s for el in vector]
+        return vector if s == 0 else [el / s for el in vector]
 
 def nSample(distribution, values, n):
     if sum(distribution) != 1:
         distribution = normalize(distribution)
-    rand = [random.random() for i in range(n)]
+    rand = [random.random() for _ in range(n)]
     rand.sort()
     samples = []
     samplePos, distPos, cdf = 0,0, distribution[0]
@@ -428,7 +421,7 @@ def flipCoin( p ):
 
 def chooseFromDistribution( distribution ):
     "Takes either a counter or a list of (prob, key) pairs and samples"
-    if type(distribution) == dict or type(distribution) == Counter:
+    if type(distribution) in [dict, Counter]:
         return sample(distribution)
     r = random.random()
     base = 0.0
@@ -450,16 +443,13 @@ def sign( x ):
     """
     Returns 1 or -1 depending on the sign of x
     """
-    if( x >= 0 ):
-        return 1
-    else:
-        return -1
+    return 1 if ( x >= 0 ) else -1
 
 def arrayInvert(array):
     """
     Inverts a matrix stored as a list of lists.
     """
-    result = [[] for i in array]
+    result = [[] for _ in array]
     for outer in array:
         for inner in range(len(outer)):
             result[inner].append(outer[inner])
@@ -472,9 +462,7 @@ def matrixAsList( matrix, value = True ):
     rows, cols = len( matrix ), len( matrix[0] )
     cells = []
     for row in range( rows ):
-        for col in range( cols ):
-            if matrix[row][col] == value:
-                cells.append( ( row, col ) )
+        cells.extend((row, col) for col in range( cols ) if matrix[row][col] == value)
     return cells
 
 def lookup(name, namespace):
@@ -493,7 +481,7 @@ def lookup(name, namespace):
         options += [obj[1] for obj in namespace.items() if obj[0] == name ]
         if len(options) == 1: return options[0]
         if len(options) > 1: raise Exception, 'Name conflict for %s'
-        raise Exception, '%s not found as a method or class' % name
+        raise (Exception, f'{name} not found as a method or class')
 
 def pause():
     """

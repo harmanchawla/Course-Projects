@@ -100,7 +100,7 @@ class Configuration:
         return hash(x + 13 * y)
 
     def __str__(self):
-        return "(x,y)="+str(self.pos)+", "+str(self.direction)
+        return f"(x,y)={str(self.pos)}, {str(self.direction)}"
 
     def generateSuccessor(self, vector):
         """
@@ -132,9 +132,9 @@ class AgentState:
 
     def __str__( self ):
         if self.isPacman:
-            return "Pacman: " + str( self.configuration )
+            return f"Pacman: {str(self.configuration)}"
         else:
-            return "Ghost: " + str( self.configuration )
+            return f"Ghost: {str(self.configuration)}"
 
     def __eq__( self, other ):
         if other == None:
@@ -153,8 +153,7 @@ class AgentState:
         return state
 
     def getPosition(self):
-        if self.configuration == None: return None
-        return self.configuration.getPosition()
+        return None if self.configuration is None else self.configuration.getPosition()
 
     def getDirection(self):
         return self.configuration.getDirection()
@@ -173,7 +172,7 @@ class Grid:
 
         self.width = width
         self.height = height
-        self.data = [[initialValue for y in range(height)] for x in range(width)]
+        self.data = [[initialValue for _ in range(height)] for _ in range(width)]
         if bitRepresentation:
             self._unpackBits(bitRepresentation)
 
@@ -189,8 +188,7 @@ class Grid:
         return '\n'.join([''.join(x) for x in out])
 
     def __eq__(self, other):
-        if other == None: return False
-        return self.data == other.data
+        return False if other == None else self.data == other.data
 
     def __hash__(self):
         # return hash(str(self))
@@ -217,13 +215,12 @@ class Grid:
         return g
 
     def count(self, item =True ):
-        return sum([x.count(item) for x in self.data])
+        return sum(x.count(item) for x in self.data)
 
     def asList(self, key = True):
         list = []
         for x in range(self.width):
-            for y in range(self.height):
-                if self[x][y] == key: list.append( (x,y) )
+            list.extend((x, y) for y in range(self.height) if self[x][y] == key)
         return list
 
     def packBits(self):
@@ -299,44 +296,40 @@ class Actions:
 
     TOLERANCE = .001
 
-    def reverseDirection(action):
-        if action == Directions.NORTH:
+    def reverseDirection(self):
+        if self == Directions.NORTH:
             return Directions.SOUTH
-        if action == Directions.SOUTH:
+        if self == Directions.SOUTH:
             return Directions.NORTH
-        if action == Directions.EAST:
+        if self == Directions.EAST:
             return Directions.WEST
-        if action == Directions.WEST:
-            return Directions.EAST
-        return action
+        return Directions.EAST if self == Directions.WEST else self
     reverseDirection = staticmethod(reverseDirection)
 
-    def vectorToDirection(vector):
-        dx, dy = vector
+    def vectorToDirection(self):
+        dx, dy = self
         if dy > 0:
             return Directions.NORTH
         if dy < 0:
             return Directions.SOUTH
         if dx < 0:
             return Directions.WEST
-        if dx > 0:
-            return Directions.EAST
-        return Directions.STOP
+        return Directions.EAST if dx > 0 else Directions.STOP
     vectorToDirection = staticmethod(vectorToDirection)
 
-    def directionToVector(direction, speed = 1.0):
-        dx, dy =  Actions._directions[direction]
+    def directionToVector(self, speed = 1.0):
+        dx, dy = Actions._directions[self]
         return (dx * speed, dy * speed)
     directionToVector = staticmethod(directionToVector)
 
-    def getPossibleActions(config, walls):
+    def getPossibleActions(self, walls):
         possible = []
-        x, y = config.pos
+        x, y = self.pos
         x_int, y_int = int(x + 0.5), int(y + 0.5)
 
         # In between grid points, all agents must continue straight
         if (abs(x - x_int) + abs(y - y_int)  > Actions.TOLERANCE):
-            return [config.getDirection()]
+            return [self.getDirection()]
 
         for dir, vec in Actions._directionsAsList:
             dx, dy = vec
@@ -348,8 +341,8 @@ class Actions:
 
     getPossibleActions = staticmethod(getPossibleActions)
 
-    def getLegalNeighbors(position, walls):
-        x,y = position
+    def getLegalNeighbors(self, walls):
+        x,y = self
         x_int, y_int = int(x + 0.5), int(y + 0.5)
         neighbors = []
         for dir, vec in Actions._directionsAsList:
@@ -362,9 +355,9 @@ class Actions:
         return neighbors
     getLegalNeighbors = staticmethod(getLegalNeighbors)
 
-    def getSuccessor(position, action):
+    def getSuccessor(self, action):
         dx, dy = Actions.directionToVector(action)
-        x, y = position
+        x, y = self
         return (x + dx, y + dy)
     getSuccessor = staticmethod(getSuccessor)
 
@@ -403,10 +396,7 @@ class GameStateData:
         return state
 
     def copyAgentStates( self, agentStates ):
-        copiedStates = []
-        for agentState in agentStates:
-            copiedStates.append( agentState.copy() )
-        return copiedStates
+        return [agentState.copy() for agentState in agentStates]
 
     def __eq__( self, other ):
         """
@@ -416,9 +406,7 @@ class GameStateData:
         # TODO Check for type of other
         if not self.agentStates == other.agentStates: return False
         if not self.food == other.food: return False
-        if not self.capsules == other.capsules: return False
-        if not self.score == other.score: return False
-        return True
+        return self.score == other.score if self.capsules == other.capsules else False
 
     def __hash__( self ):
         """
@@ -443,8 +431,8 @@ class GameStateData:
                 map[x][y] = self._foodWallStr(food[x][y], walls[x][y])
 
         for agentState in self.agentStates:
-            if agentState == None: continue
-            if agentState.configuration == None: continue
+            if agentState is None: continue
+            if agentState.configuration is None: continue
             x,y = [int( i ) for i in nearestPoint( agentState.configuration.pos )]
             agent_dir = agentState.configuration.direction
             if agentState.isPacman:
@@ -470,19 +458,10 @@ class GameStateData:
             return 'v'
         if dir == Directions.SOUTH:
             return '^'
-        if dir == Directions.WEST:
-            return '>'
-        return '<'
+        return '>' if dir == Directions.WEST else '<'
 
     def _ghostStr( self, dir ):
         return 'G'
-        if dir == Directions.NORTH:
-            return 'M'
-        if dir == Directions.SOUTH:
-            return 'W'
-        if dir == Directions.WEST:
-            return '3'
-        return 'E'
 
     def initialize( self, layout, numGhostAgents ):
         """
@@ -502,7 +481,7 @@ class GameStateData:
                 if numGhosts == numGhostAgents: continue # Max ghosts reached already
                 else: numGhosts += 1
             self.agentStates.append( AgentState( Configuration( pos, Directions.STOP), isPacman) )
-        self._eaten = [False for a in self.agentStates]
+        self._eaten = [False for _ in self.agentStates]
 
 try:
     import boinc
@@ -532,17 +511,14 @@ class Game:
         self.muteAgents = muteAgents
         self.catchExceptions = catchExceptions
         self.moveHistory = []
-        self.totalAgentTimes = [0 for agent in agents]
-        self.totalAgentTimeWarnings = [0 for agent in agents]
+        self.totalAgentTimes = [0 for _ in agents]
+        self.totalAgentTimeWarnings = [0 for _ in agents]
         self.agentTimeout = False
         import cStringIO
-        self.agentOutput = [cStringIO.StringIO() for agent in agents]
+        self.agentOutput = [cStringIO.StringIO() for _ in agents]
 
     def getProgress(self):
-        if self.gameOver:
-            return 1.0
-        else:
-            return self.rules.getProgress(self)
+        return 1.0 if self.gameOver else self.rules.getProgress(self)
 
     def _agentCrash( self, agentIndex, quiet=False):
         "Helper method for handling agent crashes"

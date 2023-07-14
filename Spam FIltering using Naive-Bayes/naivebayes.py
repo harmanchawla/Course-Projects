@@ -88,20 +88,20 @@ for j in range(columnLimit):
 # Define probability model for spam
 def probabilityClassSpam(index):
 	columnLimit = len(testset[index]) - 1
-	suspectProb = 0
-	for i in range(columnLimit):
-		suspectProb += probabilityDistribution(testset[index][i], meanSpam[i], varianceSpam[i])
-
+	suspectProb = sum(
+		probabilityDistribution(testset[index][i], meanSpam[i], varianceSpam[i])
+		for i in range(columnLimit)
+	)
 	suspectProb += math.log(probabilitySpam)
 	return suspectProb
 
 # Define probability model for ham
 def probabilityClassHam(index):
 	columnLimit = len(testset[index]) - 1
-	suspectProb = 0
-	for i in range(columnLimit):
-		suspectProb += probabilityDistribution(testset[index][i], meanHam[i], varianceHam[i])
-
+	suspectProb = sum(
+		probabilityDistribution(testset[index][i], meanHam[i], varianceHam[i])
+		for i in range(columnLimit)
+	)
 	suspectProb += math.log(probabilityHam)
 	return suspectProb
 
@@ -116,6 +116,7 @@ def probabilityDistribution(x, mean, variance):
 	return probability
 
 ''' Calculating probability for each test case. '''
+
 totalTestSet = len(testset)
 rowLimit = totalTestSet
 columnLimit = len(testset[1]) - 1
@@ -132,13 +133,9 @@ for i in range(rowLimit):
 	else:
 		prediction.append(0)
 
- 
-''' Computing Accurary '''
-count = 0
-for i in range(totalTestSet):
-	if prediction[i] == testset[i][9]:
-		count += 1
 
+''' Computing Accurary '''
+count = sum(1 for i in range(rowLimit) if prediction[i] == testset[i][9])
 # Answers
 print('Probability for Class Spam: ', probabilitySpam)
 print('Probability for Class Ham: ', probabilityHam)
@@ -147,17 +144,13 @@ print('Means for attributes for Class Ham: ', meanHam)
 print('Variance for attributes for Class Spam: ', varianceSpam)
 print('Variance for attributes for Class Ham: ', varianceHam)
 print('Predicted classes for all test examples: ', prediction)
-print('Correctly classified: ', count, 'Total: ', totalTestSet, '\n')
-print('Incorrect Predictions: ', totalTestSet - count)
-print('Percentage error: ', 100 - 100*count/totalTestSet, '\n')
-print('Accurary: ', 100*count/totalTestSet)
-
+print('Correctly classified: ', count, 'Total: ', rowLimit, '\n')
+print('Incorrect Predictions: ', rowLimit - count)
+print('Percentage error: ', 100 - 100*count / rowLimit, '\n')
+print('Accurary: ', 100*count / rowLimit)
 #question 10
 zero_r = np.zeros(200)
-count = 0
-for i in range(200): 
-	if testset[i][9] == zero_r[i]:
-		count += 1
+count = sum(1 for i in range(200) if testset[i][9] == zero_r[i])
 count *= 100
 print('Answer 10 (Zero-R): ', count/200)
 

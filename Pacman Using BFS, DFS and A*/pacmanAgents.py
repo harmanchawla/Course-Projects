@@ -198,7 +198,7 @@ class DFSAgent(Agent):
             node = stack[0][0]
 
             # this is the only major change as I slice everything but the last element
-            stack = stack[:len(stack)-1] 
+            stack = stack[:-1] 
 
             # check if it is a terminal state i.e. win state or lose state
             if node.isLose():
@@ -222,7 +222,7 @@ class DFSAgent(Agent):
                     return stateInfo[max(stack, key=lambda x : x[1])[0]]
                 stateInfo[successor] = stateInfo[node]
                 stack.append((successor, admissibleHeuristic(successor)))
-        
+
         return Directions.STOP
 
 class AStarAgent(Agent):

@@ -81,13 +81,11 @@ def COMPUTE_MAGNITUDE(IMAGE,GX_NORMALIZED,GY_NORMALIZED,o):
 # Function for computing Gradient Angle
 def COMPUTE_ANGLE(IMAGE,GX,GY):
     IMAGE_N,IMAGE_M=IMAGE.shape
-    
+
     ANGLE=np.zeros((IMAGE_N,IMAGE_M),dtype=np.float)
     ANGLE=np.arctan2(GY,GX)* 180 / np.pi # arctan2 returns in radians so to convert it into degree we did this
     ANGLE=ANGLE+360
-    ANGLE=np.fmod(ANGLE,360)# To deal with negative values of angle
-    
-    return ANGLE
+    return np.fmod(ANGLE,360)
 
 
 # In[5]:

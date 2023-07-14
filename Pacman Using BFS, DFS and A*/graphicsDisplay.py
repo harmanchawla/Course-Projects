@@ -26,14 +26,13 @@ from game import Directions
 DEFAULT_GRID_SIZE = 20.0
 INFO_PANE_HEIGHT = 35
 BACKGROUND_COLOR = formatColor(0,0,0)
-WALL_COLOR = formatColor(0.0/255.0, 51.0/255.0, 255.0/255.0)
+WALL_COLOR = formatColor(0.0/255.0, 51.0/255.0, 1.0)
 INFO_PANE_COLOR = formatColor(.4,.4,0)
 SCORE_COLOR = formatColor(.9, .9, .9)
 PACMAN_OUTLINE_WIDTH = 2
 PACMAN_CAPTURE_OUTLINE_WIDTH = 4
 
-GHOST_COLORS = []
-GHOST_COLORS.append(formatColor(.9,0,0)) # Red
+GHOST_COLORS = [formatColor(.9, 0, 0)]
 GHOST_COLORS.append(formatColor(0,.3,.9)) # Blue
 GHOST_COLORS.append(formatColor(.98,.41,.07)) # Orange
 GHOST_COLORS.append(formatColor(.1,.75,.7)) # Green
@@ -60,7 +59,7 @@ SCARED_COLOR = formatColor(1,1,1)
 
 GHOST_VEC_COLORS = map(colorToVector, GHOST_COLORS)
 
-PACMAN_COLOR = formatColor(255.0/255.0,255.0/255.0,61.0/255)
+PACMAN_COLOR = formatColor(1.0, 1.0, 61.0/255)
 PACMAN_SCALE = 0.5
 #pacman_speed = 0.25
 
@@ -93,7 +92,7 @@ class InfoPane:
         """
           Translates a point relative from the bottom left of the info pane.
         """
-        if y == None:
+        if y is None:
             x,y = pos
         else:
             x = pos
@@ -122,8 +121,7 @@ class InfoPane:
         changeText(self.scoreText, "SCORE: % 4d" % score)
 
     def setTeam(self, isBlue):
-        text = "RED TEAM"
-        if isBlue: text = "BLUE TEAM"
+        text = "BLUE TEAM" if isBlue else "RED TEAM"
         self.teamText = text( self.toScreen(300, 0  ), self.textColor, text, "Times", self.fontSize, "bold")
 
     def updateGhostDistances(self, distances):
@@ -213,10 +211,9 @@ class PacmanGraphics:
         for index, agent in enumerate(state.agentStates):
             if agent.isPacman:
                 image = self.drawPacman(agent, index)
-                self.agentImages.append( (agent, image) )
             else:
                 image = self.drawGhost(agent, index)
-                self.agentImages.append( (agent, image) )
+            self.agentImages.append( (agent, image) )
         refresh()
 
     def swapImages(self, agentIndex, newState):
@@ -227,10 +224,9 @@ class PacmanGraphics:
         for item in prevImage: remove_from_screen(item)
         if newState.isPacman:
             image = self.drawPacman(newState, agentIndex)
-            self.agentImages[agentIndex] = (newState, image )
         else:
             image = self.drawGhost(newState, agentIndex)
-            self.agentImages[agentIndex] = (newState, image )
+        self.agentImages[agentIndex] = (newState, image )
         refresh()
 
     def update(self, newState):
@@ -289,15 +285,14 @@ class PacmanGraphics:
         width = 30 + 80 * math.sin(math.pi* pos)
 
         delta = width / 2
-        if (direction == 'West'):
-            endpoints = (180+delta, 180-delta)
-        elif (direction == 'North'):
-            endpoints = (90+delta, 90-delta)
-        elif (direction == 'South'):
-            endpoints = (270+delta, 270-delta)
+        if direction == 'North':
+            return 90+delta, 90-delta
+        elif direction == 'South':
+            return 270+delta, 270-delta
+        elif direction == 'West':
+            return 180+delta, 180-delta
         else:
-            endpoints = (0+delta, 0-delta)
-        return endpoints
+            return 0+delta, 0-delta
 
     def movePacman(self, position, direction, image):
         screenPosition = self.to_screen(position)
@@ -327,19 +322,19 @@ class PacmanGraphics:
         refresh()
 
     def getGhostColor(self, ghost, ghostIndex):
-        if ghost.scaredTimer > 0:
-            return SCARED_COLOR
-        else:
-            return GHOST_COLORS[ghostIndex]
+        return SCARED_COLOR if ghost.scaredTimer > 0 else GHOST_COLORS[ghostIndex]
 
     def drawGhost(self, ghost, agentIndex):
         pos = self.getPosition(ghost)
         dir = self.getDirection(ghost)
         (screen_x, screen_y) = (self.to_screen(pos) )
-        coords = []
-        for (x, y) in GHOST_SHAPE:
-            coords.append((x*self.gridSize*GHOST_SIZE + screen_x, y*self.gridSize*GHOST_SIZE + screen_y))
-
+        coords = [
+            (
+                x * self.gridSize * GHOST_SIZE + screen_x,
+                y * self.gridSize * GHOST_SIZE + screen_y,
+            )
+            for x, y in GHOST_SHAPE
+        ]
         colour = self.getGhostColor(ghost, agentIndex)
         body = polygon(coords, colour, filled = 1)
         WHITE = formatColor(1.0, 1.0, 1.0)
@@ -347,38 +342,31 @@ class PacmanGraphics:
 
         dx = 0
         dy = 0
-        if dir == 'North':
-            dy = -0.2
-        if dir == 'South':
-            dy = 0.2
         if dir == 'East':
             dx = 0.2
-        if dir == 'West':
+        elif dir == 'North':
+            dy = -0.2
+        elif dir == 'South':
+            dy = 0.2
+        elif dir == 'West':
             dx = -0.2
         leftEye = circle((screen_x+self.gridSize*GHOST_SIZE*(-0.3+dx/1.5), screen_y-self.gridSize*GHOST_SIZE*(0.3-dy/1.5)), self.gridSize*GHOST_SIZE*0.2, WHITE, WHITE)
         rightEye = circle((screen_x+self.gridSize*GHOST_SIZE*(0.3+dx/1.5), screen_y-self.gridSize*GHOST_SIZE*(0.3-dy/1.5)), self.gridSize*GHOST_SIZE*0.2, WHITE, WHITE)
         leftPupil = circle((screen_x+self.gridSize*GHOST_SIZE*(-0.3+dx), screen_y-self.gridSize*GHOST_SIZE*(0.3-dy)), self.gridSize*GHOST_SIZE*0.08, BLACK, BLACK)
         rightPupil = circle((screen_x+self.gridSize*GHOST_SIZE*(0.3+dx), screen_y-self.gridSize*GHOST_SIZE*(0.3-dy)), self.gridSize*GHOST_SIZE*0.08, BLACK, BLACK)
-        ghostImageParts = []
-        ghostImageParts.append(body)
-        ghostImageParts.append(leftEye)
-        ghostImageParts.append(rightEye)
-        ghostImageParts.append(leftPupil)
-        ghostImageParts.append(rightPupil)
-
-        return ghostImageParts
+        return [body, leftEye, rightEye, leftPupil, rightPupil]
 
     def moveEyes(self, pos, dir, eyes):
         (screen_x, screen_y) = (self.to_screen(pos) )
         dx = 0
         dy = 0
-        if dir == 'North':
-            dy = -0.2
-        if dir == 'South':
-            dy = 0.2
         if dir == 'East':
             dx = 0.2
-        if dir == 'West':
+        elif dir == 'North':
+            dy = -0.2
+        elif dir == 'South':
+            dy = 0.2
+        elif dir == 'West':
             dx = -0.2
         moveCircle(eyes[0],(screen_x+self.gridSize*GHOST_SIZE*(-0.3+dx/1.5), screen_y-self.gridSize*GHOST_SIZE*(0.3-dy/1.5)), self.gridSize*GHOST_SIZE*0.2)
         moveCircle(eyes[1],(screen_x+self.gridSize*GHOST_SIZE*(0.3+dx/1.5), screen_y-self.gridSize*GHOST_SIZE*(0.3-dy/1.5)), self.gridSize*GHOST_SIZE*0.2)
@@ -394,20 +382,17 @@ class PacmanGraphics:
             move_by(ghostImagePart, delta)
         refresh()
 
-        if ghost.scaredTimer > 0:
-            color = SCARED_COLOR
-        else:
-            color = GHOST_COLORS[ghostIndex]
+        color = SCARED_COLOR if ghost.scaredTimer > 0 else GHOST_COLORS[ghostIndex]
         edit(ghostImageParts[0], ('fill', color), ('outline', color))
         self.moveEyes(self.getPosition(ghost), self.getDirection(ghost), ghostImageParts[-4:])
         refresh()
 
     def getPosition(self, agentState):
-        if agentState.configuration == None: return (-1000, -1000)
+        if agentState.configuration is None: return (-1000, -1000)
         return agentState.getPosition()
 
     def getDirection(self, agentState):
-        if agentState.configuration == None: return Directions.STOP
+        if agentState.configuration is None: return Directions.STOP
         return agentState.configuration.getDirection()
 
     def finish(self):
@@ -517,9 +502,7 @@ class PacmanGraphics:
     def isWall(self, x, y, walls):
         if x < 0 or y < 0:
             return False
-        if x >= walls.width or y >= walls.height:
-            return False
-        return walls[x][y]
+        return False if x >= walls.width or y >= walls.height else walls[x][y]
 
     def drawFood(self, foodMatrix ):
         foodImages = []
@@ -590,15 +573,13 @@ class PacmanGraphics:
         "Draws an agent's belief distributions"
         # copy all distributions so we don't change their state
         distributions = map(lambda x: x.copy(), distributions)
-        if self.distributionImages == None:
+        if self.distributionImages is None:
             self.drawDistributions(self.previousState)
         for x in range(len(self.distributionImages)):
             for y in range(len(self.distributionImages[0])):
                 image = self.distributionImages[x][y]
                 weights = [dist[ (x,y) ] for dist in distributions]
 
-                if sum(weights) != 0:
-                    pass
                 # Fog of war
                 color = [0.0,0.0,0.0]
                 colors = GHOST_VEC_COLORS[1:] # With Pacman
@@ -634,16 +615,14 @@ class FirstPersonPacmanGraphics(PacmanGraphics):
     def lookAhead(self, config, state):
         if config.getDirection() == 'Stop':
             return
-        else:
-            pass
-            # Draw relevant ghosts
-            allGhosts = state.getGhostStates()
-            visibleGhosts = state.getVisibleGhosts()
-            for i, ghost in enumerate(allGhosts):
-                if ghost in visibleGhosts:
-                    self.drawGhost(ghost, i)
-                else:
-                    self.currentGhostImages[i] = None
+        # Draw relevant ghosts
+        allGhosts = state.getGhostStates()
+        visibleGhosts = state.getVisibleGhosts()
+        for i, ghost in enumerate(allGhosts):
+            if ghost in visibleGhosts:
+                self.drawGhost(ghost, i)
+            else:
+                self.currentGhostImages[i] = None
 
     def getGhostColor(self, ghost, ghostIndex):
         return GHOST_COLORS[ghostIndex]

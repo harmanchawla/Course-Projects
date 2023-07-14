@@ -138,7 +138,7 @@ def convolution(image, kernel, i, j, border):
 
 ''' Method calculates 4 arrays: Gx, Gy, Gradient Magnitude and Gradient Angle '''
 def gradientOperator(img):
-	
+
 	''' Using Prewitt's operator as the kernel here '''
 	gxkernel = [[-1, 0, 1], [-1, 0, 1], [-1, 0, 1]]
 	gykernel = [[1, 0, -1], [1, 0, -1], [1, 0, -1]]
@@ -228,9 +228,9 @@ def gradientOperator(img):
 		for j in range(columnSize):
 			if gx[i][j] is 0:
 				gaImage[i][j] = 90.0
-			elif gx[i][j] is not 0:
+			else:
 				gaImage[i][j] = np.rad2deg(np.arctan2(gy[i][j], gx[i][j]))
-				
+
 				if gaImage[i][j] < 0:
 					gaImage[i][j] = 360 - math.fabs(gaImage[i][j])
 
@@ -279,11 +279,11 @@ def nonMaximaSuppression(magnitude, angle):
 		for j in range(columnSize):
 			if quantize[i][j] <= 22.5 or quantize[i][j] > 157.5:
 				quantize[i][j] = 0
-			elif quantize[i][j] > 22.5 and quantize[i][j] <= 67.5:
+			elif quantize[i][j] <= 67.5:
 				quantize[i][j] = 1
-			elif quantize[i][j] > 67.5 and quantize[i][j] <= 112.5:
+			elif quantize[i][j] <= 112.5:
 				quantize[i][j] = 2
-			elif quantize[i][j] > 112.5 and quantize[i][j] <= 157.5:
+			else:
 				quantize[i][j] = 3
 
 	''' Converting the float values to int '''
@@ -312,31 +312,33 @@ def checkValues(magnitude, a, i, j):
 
 	# Check values to the left and the right
 	if a == 0:
- 		if magnitude[i][j] > magnitude[i][j + 1] and magnitude[i][j] >= magnitude[i][j - 1]:
- 			return magnitude[i][j]
- 		else:
- 			return 0
-
-	# Check values top-right and bottom-left
+		return (
+			magnitude[i][j]
+			if magnitude[i][j] > magnitude[i][j + 1]
+			and magnitude[i][j] >= magnitude[i][j - 1]
+			else 0
+		)
 	elif a == 1:
-		if magnitude[i][j] > magnitude[i - 1][j + 1] and magnitude[i][j] >= magnitude[i + 1][j - 1]:
-			return magnitude[i][j]
-		else:
-			return 0
-
-	# Check values to the top and bottom
+		return (
+			magnitude[i][j]
+			if magnitude[i][j] > magnitude[i - 1][j + 1]
+			and magnitude[i][j] >= magnitude[i + 1][j - 1]
+			else 0
+		)
 	elif a == 2:
-		if magnitude[i][j] >= magnitude[i - 1][j] and magnitude[i][j] >= magnitude[i + 1][j]:
-			return magnitude[i][j]
-		else:
-			return 0
-
-	# Check values to the top-left and bottom-right
+		return (
+			magnitude[i][j]
+			if magnitude[i][j] >= magnitude[i - 1][j]
+			and magnitude[i][j] >= magnitude[i + 1][j]
+			else 0
+		)
 	elif a == 3:
-		if magnitude[i][j] > magnitude[i - 1][j - 1] and magnitude[i][j] >= magnitude[i + 1][j + 1]:
-			return magnitude[i][j]
-		else:
-			return 0
+		return (
+			magnitude[i][j]
+			if magnitude[i][j] > magnitude[i - 1][j - 1]
+			and magnitude[i][j] >= magnitude[i + 1][j + 1]
+			else 0
+		)
 
 
 '''
@@ -390,10 +392,8 @@ def makeHistogram(img):
 	''' converting the image into a 1D array '''
 	image1D = []
 	for i in range(rowSize):
-		for j in range(columnSize):
-			image1D.append(img[i][j])
-
-	histogram = [0 for i in range(256)]
+		image1D.extend(img[i][j] for j in range(columnSize))
+	histogram = [0 for _ in range(256)]
 	loc = 0
 
 	''' counting the number of times a value occurs and storing it '''
@@ -449,11 +449,7 @@ def pTileThresholding(img, histogram, percentage, name):
 	''' performing thresholding '''
 	for i in range(rowSize):
 		for j in range(columnSize):
-			if thresholdImage[i][j] >= threshold:
-				thresholdImage[i][j] = 255
-			else:
-				thresholdImage[i][j] = 0
-
+			thresholdImage[i][j] = 255 if thresholdImage[i][j] >= threshold else 0
 	thresholdImage = thresholdImage.astype(int)
 
 	''' counting the number of edge pixels '''
